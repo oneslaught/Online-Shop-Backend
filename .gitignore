@@ -1,5 +1,8 @@
 node_modules
 dist
+.env
+.report.html
+.report.json
 
 # dependencies
 /node_modules

@@ -1,15 +1,12 @@
 import { Flyway } from "node-flyway";
-
-const password = process.env.DB_PASSWORD;
-const url = process.env.DB_URL!;
-const user = process.env.DB_USER!;
+import "dotenv/config";
 
 const flyway = new Flyway({
   defaultSchema: "public",
-  migrationLocations: ["../../flyway-10.20.0/sql"],
-  password: password,
-  url: url,
-  user: user,
+  migrationLocations: ["flyway/sql"],
+  password: process.env.DB_PASSWORD,
+  url: process.env.DB_URL!,
+  user: process.env.DB_USER!,
 });
 
 export default async function runMigration() {
@@ -17,14 +14,12 @@ export default async function runMigration() {
     .migrate()
     .then((response) => {
       if (!response.success) {
-        const errorCode = response.error?.errorCode ?? "Unknown error";
-        throw new Error(`Unable to execute migrate command. Error: ${errorCode}`);
+        console.error("Migration failed with error:", response.error);
       } else {
         console.log("Migration successful:", response);
       }
     })
     .catch((error: unknown) => {
-      console.error("Migration failed:", error);
       throw error;
     });
 }
